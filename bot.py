@@ -12,8 +12,7 @@ from database import init_db, add_user
 # تنظیمات بات
 # =========================
 
-TOKEN = "8992822551:AAHkhv_myuoQg2rVFGhU5OUo-ycmDLjzEzE"
-
+TOKEN = "YOUR_TOKEN"
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
