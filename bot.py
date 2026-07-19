@@ -6,13 +6,15 @@ from aiogram.filters import CommandStart
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 from database import init_db, add_user
+from config import BOT_TOKEN
 
 
 # =========================
 # تنظیمات بات
 # =========================
 
-TOKEN = "YOUR_TOKEN"
+TOKEN = BOT_TOKEN
+
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
@@ -64,53 +66,99 @@ async def start(message: Message):
 
 
 # =========================
-# پاسخ به دکمه‌ها
+# خرید کانفیگ
 # =========================
 
-@dp.message()
-async def menu_handler(message: Message):
+@dp.message(lambda message: message.text == "🛒 خرید کانفیگ")
+async def buy_config(message: Message):
 
-    text = message.text
+    await message.answer(
+        "🛒 بخش خرید کانفیگ\n\n"
+        "💎 سرویس VIP\n"
+        "🎮 سرویس Gaming\n\n"
+        "به‌زودی انتخاب پلن‌ها فعال می‌شود."
+    )
 
-    if text == "🛒 خرید کانفیگ":
-        await message.answer(
-            "🛒 بخش خرید کانفیگ\n\n"
-            "💎 لطفاً نوع سرویس خود را انتخاب کنید."
-        )
 
-    elif text == "📦 سرویس‌های من":
-        await message.answer(
-            "📦 سرویس‌های شما\n\n"
-            "هنوز سرویسی برای نمایش وجود ندارد."
-        )
+# =========================
+# سرویس‌های من
+# =========================
 
-    elif text == "👤 حساب کاربری":
-        await message.answer(
-            f"👤 اطلاعات حساب شما\n\n"
-            f"🆔 شناسه کاربری: {message.from_user.id}\n"
-            f"👤 نام: {message.from_user.first_name}"
-        )
+@dp.message(lambda message: message.text == "📦 سرویس‌های من")
+async def my_services(message: Message):
 
-    elif text == "🎁 دعوت دوستان":
-        await message.answer(
-            "🎁 سیستم دعوت دوستان\n\n"
-            "👥 با دعوت ۱۰ نفر از دوستان خود:\n"
-            "🎁 ۱۰ گیگ اینترنت رایگان\n"
-            "⏳ به مدت ۲۰ روز دریافت کنید."
-        )
+    await message.answer(
+        "📦 سرویس‌های شما\n\n"
+        "هنوز سرویسی برای نمایش وجود ندارد."
+    )
 
-    elif text == "🎟 کد تخفیف":
-        await message.answer(
-            "🎟 کد تخفیف\n\n"
-            "اگر کد تخفیف دارید، آن را ارسال کنید."
-        )
 
-    elif text == "🆘 پشتیبانی":
-        await message.answer(
-            "🆘 پشتیبانی Melly Shekan\n\n"
-            "📩 ارتباط با پشتیبانی:\n"
-            "@Mellyshekan_support"
-        )
+# =========================
+# حساب کاربری
+# =========================
+
+@dp.message(lambda message: message.text == "👤 حساب کاربری")
+async def account(message: Message):
+
+    user = message.from_user
+
+    await message.answer(
+        "👤 اطلاعات حساب شما\n\n"
+        f"🆔 شناسه کاربری: {user.id}\n"
+        f"👤 نام: {user.first_name}\n"
+        f"🔗 نام کاربری: @{user.username if user.username else 'ندارد'}"
+    )
+
+
+# =========================
+# دعوت دوستان
+# =========================
+
+@dp.message(lambda message: message.text == "🎁 دعوت دوستان")
+async def referrals(message: Message):
+
+    bot_info = await bot.get_me()
+
+    referral_link = (
+        f"https://t.me/{bot_info.username}"
+        f"?start=ref_{message.from_user.id}"
+    )
+
+    await message.answer(
+        "🎁 سیستم دعوت دوستان\n\n"
+        "👥 با دعوت ۱۰ نفر از دوستان خود:\n"
+        "🎁 ۱۰ گیگ اینترنت رایگان دریافت کنید.\n"
+        "⏳ مدت اعتبار: ۲۰ روز\n\n"
+        "🔗 لینک دعوت اختصاصی شما:\n"
+        f"{referral_link}"
+    )
+
+
+# =========================
+# کد تخفیف
+# =========================
+
+@dp.message(lambda message: message.text == "🎟 کد تخفیف")
+async def discount(message: Message):
+
+    await message.answer(
+        "🎟 کد تخفیف\n\n"
+        "کد تخفیف خود را ارسال کنید تا بررسی شود."
+    )
+
+
+# =========================
+# پشتیبانی
+# =========================
+
+@dp.message(lambda message: message.text == "🆘 پشتیبانی")
+async def support(message: Message):
+
+    await message.answer(
+        "🆘 پشتیبانی Melly Shekan\n\n"
+        "📩 ارتباط با پشتیبانی:\n"
+        "@Mellyshekan_support"
+    )
 
 
 # =========================
